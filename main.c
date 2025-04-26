@@ -11,21 +11,20 @@ char *text_to_morseovka(const char *text) {
     int delka_morseovky = 0;
     for (size_t i = 0; i < delka_textu; i++) {
         bool konec = false;
+        bool mezera = false;
         switch (text[i]) {
             case '!':
                 if (i + 1 != delka_textu && text[i+1] == 'q') {
                     memset(morseovka, 0, MAX_LENGTH);
                     return morseovka;
                 }
-                morseovka[delka_morseovky++] = '-';
-                morseovka[delka_morseovky++] = '.';
-                morseovka[delka_morseovky++] = '-';
-                morseovka[delka_morseovky++] = '.';
-                morseovka[delka_morseovky++] = '-';
-                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '!';
                 break;
             case ' ':
-                morseovka[delka_morseovky++] = '/';
+                if (i + 1 != delka_textu && text[i+1] != ' ') {
+                    morseovka[delka_morseovky++] = '/';
+                }
+                mezera = true;
                 break;
             case '.':
                 morseovka[delka_morseovky++] = '.';
@@ -280,7 +279,7 @@ char *text_to_morseovka(const char *text) {
             default:
                 morseovka[delka_morseovky++] = '?';
         }
-        if (!konec) morseovka[delka_morseovky++] = ' ';
+        if (!konec && !mezera && (i + 1 != delka_textu && text[i+1] != ' ')) morseovka[delka_morseovky++] = ' ';
     }
 
     return morseovka;
@@ -403,6 +402,7 @@ void morseovka_to_text(const char *kod) {
         }
     }
 }
+
 int main() {
     bool morseovka = false;
     char *input;
