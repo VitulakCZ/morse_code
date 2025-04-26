@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #define MAX_LENGTH 256
 
+char znaky[MAX_LENGTH];
 char morseovka[MAX_LENGTH];
 char *text_to_morseovka(const char *text) {
     memset(morseovka, 0, MAX_LENGTH);
@@ -12,10 +13,19 @@ char *text_to_morseovka(const char *text) {
         bool konec = false;
         switch (text[i]) {
             case '!':
-                memset(morseovka, 0, MAX_LENGTH);
-                return morseovka;
+                if (i + 1 != delka_textu && text[i+1] == 'q') {
+                    memset(morseovka, 0, MAX_LENGTH);
+                    return morseovka;
+                }
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
                 break;
             case ' ':
+                morseovka[delka_morseovky++] = '/';
                 break;
             case '.':
                 morseovka[delka_morseovky++] = '.';
@@ -276,6 +286,123 @@ char *text_to_morseovka(const char *text) {
     return morseovka;
 }
 
+char lookup_table() {
+    if (strcmp(znaky, "!q") == 0)
+        return 0;
+    if (strcmp(znaky, "") == 0)
+        return 0;
+    if (strcmp(znaky, "-.-.--") == 0)
+        return '!';
+    if (strcmp(znaky, ".-.-.-") == 0)
+        return '.';
+    if (strcmp(znaky, "..-..") == 0)
+        return ',';
+    if (strcmp(znaky, ".-") == 0)
+        return 'A';
+    if (strcmp(znaky, "-...") == 0)
+        return 'B';
+    if (strcmp(znaky, "-.-.") == 0)
+        return 'C';
+    if (strcmp(znaky, "-..") == 0)
+        return 'D';
+    if (strcmp(znaky, ".") == 0)
+        return 'E';
+    if (strcmp(znaky, "..-.") == 0)
+        return 'F';
+    if (strcmp(znaky, "--.") == 0)
+        return 'G';
+    if (strcmp(znaky, "....") == 0)
+        return 'H';
+    if (strcmp(znaky, "..") == 0)
+        return 'I';
+    if (strcmp(znaky, ".---") == 0)
+        return 'J';
+    if (strcmp(znaky, "-.-") == 0)
+        return 'K';
+    if (strcmp(znaky, ".-..") == 0)
+        return 'L';
+    if (strcmp(znaky, "--") == 0)
+        return 'M';
+    if (strcmp(znaky, "-.") == 0)
+        return 'N';
+    if (strcmp(znaky, "---") == 0)
+        return 'O';
+    if (strcmp(znaky, ".--.") == 0)
+        return 'P';
+    if (strcmp(znaky, "--.-") == 0)
+        return 'Q';
+    if (strcmp(znaky, ".-.") == 0)
+        return 'R';
+    if (strcmp(znaky, "...") == 0)
+        return 'S';
+    if (strcmp(znaky, "-") == 0)
+        return 'T';
+    if (strcmp(znaky, "..-") == 0)
+        return 'U';
+    if (strcmp(znaky, "...-") == 0)
+        return 'V';
+    if (strcmp(znaky, ".--") == 0)
+        return 'W';
+    if (strcmp(znaky, "-..-") == 0)
+        return 'X';
+    if (strcmp(znaky, "-.--") == 0)
+        return 'Y';
+    if (strcmp(znaky, "--..") == 0)
+        return 'Z';
+    if (strcmp(znaky, ".----") == 0)
+        return '1';
+    if (strcmp(znaky, "..---") == 0)
+        return '2';
+    if (strcmp(znaky, "...--") == 0)
+        return '3';
+    if (strcmp(znaky, "....-") == 0)
+        return '4';
+    if (strcmp(znaky, ".....") == 0)
+        return '5';
+    if (strcmp(znaky, "-....") == 0)
+        return '6';
+    if (strcmp(znaky, "--...") == 0)
+        return '7';
+    if (strcmp(znaky, "---..") == 0)
+        return '8';
+    if (strcmp(znaky, "----.") == 0)
+        return '9';
+    if (strcmp(znaky, "-----") == 0)
+        return '0';
+    return '?';
+}
+
+void morseovka_to_text(const char *kod) {
+    memset(znaky, 0, MAX_LENGTH);
+    int delka_kodu = 0;
+    int pocet_znaku = 0;
+    bool znak = false;
+    while (kod[delka_kodu] != '\0') delka_kodu++;
+    delka_kodu--;
+    for (int i = 0; i < delka_kodu; i++) {
+        if (kod[i] == '/' && (znak || (i > 0 && kod[i-1] == ' '))) {
+            printf("%c ", lookup_table());
+            memset(znaky, 0, MAX_LENGTH);
+            pocet_znaku = 0;
+        }
+        if (kod[i] == ' ' && znak) {
+            printf("%c", lookup_table());
+            memset(znaky, 0, MAX_LENGTH);
+            pocet_znaku = 0;
+            znak = false;
+        }
+        if (kod[i] != ' ' && kod[i] != '/') {
+            znak = true;
+            znaky[pocet_znaku++] = kod[i];
+        }
+        if ((i + 1 == delka_kodu) && kod[i] != ' ') {
+            printf("%c\n", lookup_table());
+            memset(znaky, 0, MAX_LENGTH);
+            pocet_znaku = 0;
+            znak = false;
+        }
+    }
+}
 int main() {
     bool morseovka = false;
     char *input;
@@ -285,7 +412,11 @@ int main() {
         else
             printf("Zadejte kód (ENTER pro změnu na text, !q = quit): ");
         fgets(input, MAX_LENGTH, stdin);
-        printf("%s", text_to_morseovka(input));
+        if (strcmp(input, "\n") == 0) {
+            morseovka = !morseovka;
+            continue;
+        }
+        (!morseovka) ? printf("%s", text_to_morseovka(input)) : morseovka_to_text(input);
     }
     return 0;
 }
