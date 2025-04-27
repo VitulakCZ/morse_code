@@ -480,13 +480,16 @@ void morseovka_to_text(const char *kod) {
     int delka_kodu = 0;
     int pocet_znaku = 0;
     bool znak = false;
+    bool znak_v_kodu = false;
     while (kod[delka_kodu] != '\0') delka_kodu++;
     delka_kodu--;
     for (int i = 0; i < delka_kodu; i++) {
-        if (kod[i] == '/' && (znak || (i > 0 && kod[i-1] != ' '))) {
+        if (kod[i] == '/' && znak) {
             printf("%c ", lookup_table());
             memset(znaky, 0, MAX_LENGTH);
             pocet_znaku = 0;
+        } else if (kod[i] == '/' && i > 0 && kod[i-1] == ' ' && znak_v_kodu) {
+            printf(" ");
         }
         if (kod[i] == ' ' && znak) {
             printf("%c", lookup_table());
@@ -496,13 +499,15 @@ void morseovka_to_text(const char *kod) {
         }
         if (kod[i] != ' ' && kod[i] != '/') {
             znak = true;
+            znak_v_kodu = true;
             znaky[pocet_znaku++] = kod[i];
         }
         if ((i + 1 == delka_kodu) && kod[i] != ' ') {
             printf("%c\n", lookup_table());
             memset(znaky, 0, MAX_LENGTH);
-            pocet_znaku = 0;
-            znak = false;
+        } else if (i + 1 == delka_kodu) {
+            printf("\n");
+            memset(znaky, 0, MAX_LENGTH);
         }
     }
 }
