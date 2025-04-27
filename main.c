@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#define MAX_LENGTH 256
+#define MAX_LENGTH 1024
 
 char znaky[MAX_LENGTH];
 char morseovka[MAX_LENGTH];
@@ -41,6 +41,90 @@ char *text_to_morseovka(const char *text) {
                 morseovka[delka_morseovky++] = '.';
                 morseovka[delka_morseovky++] = '-';
                 morseovka[delka_morseovky++] = '-';
+                break;
+            case '?':
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                break;
+            case '\'':
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                break;
+            case '/':
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                break;
+            case '(':
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                break;
+            case ')':
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                break;
+            case ':':
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                break;
+            case '=':
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                break;
+            case '+':
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                break;
+            case '-':
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                break;
+            case '"':
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                break;
+            case '@':
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
+                morseovka[delka_morseovky++] = '-';
+                morseovka[delka_morseovky++] = '.';
                 break;
             case 'A':
             case 'a':
@@ -290,12 +374,32 @@ char lookup_table() {
         return 0;
     if (strcmp(znaky, "") == 0)
         return 0;
-    if (strcmp(znaky, "-.-.--") == 0)
-        return '!';
     if (strcmp(znaky, ".-.-.-") == 0)
         return '.';
     if (strcmp(znaky, "..-..") == 0)
         return ',';
+    if (strcmp(znaky, "..--..") == 0)
+        return '?';
+    if (strcmp(znaky, ".----.") == 0)
+        return '\'';
+    if (strcmp(znaky, "-..-.") == 0)
+        return '/';
+    if (strcmp(znaky, "-.--.") == 0)
+        return '(';
+    if (strcmp(znaky, "-.--.-") == 0)
+        return ')';
+    if (strcmp(znaky, "---...") == 0)
+        return ':';
+    if (strcmp(znaky, "-...-") == 0)
+        return '=';
+    if (strcmp(znaky, ".-.-.") == 0)
+        return '+';
+    if (strcmp(znaky, "-....-") == 0)
+        return '-';
+    if (strcmp(znaky, ".-..-.") == 0)
+        return '"';
+    if (strcmp(znaky, ".--.-.") == 0)
+        return '@';
     if (strcmp(znaky, ".-") == 0)
         return 'A';
     if (strcmp(znaky, "-...") == 0)
@@ -379,7 +483,7 @@ void morseovka_to_text(const char *kod) {
     while (kod[delka_kodu] != '\0') delka_kodu++;
     delka_kodu--;
     for (int i = 0; i < delka_kodu; i++) {
-        if (kod[i] == '/' && (znak || (i > 0 && kod[i-1] == ' '))) {
+        if (kod[i] == '/' && (znak || (i > 0 && kod[i-1] != ' '))) {
             printf("%c ", lookup_table());
             memset(znaky, 0, MAX_LENGTH);
             pocet_znaku = 0;
