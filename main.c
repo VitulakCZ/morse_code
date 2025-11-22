@@ -376,7 +376,7 @@ char lookup_table() {
         return 0;
     if (strcmp(znaky, ".-.-.-") == 0)
         return '.';
-    if (strcmp(znaky, "..-..") == 0)
+    if (strcmp(znaky, "--..--") == 0)
         return ',';
     if (strcmp(znaky, "..--..") == 0)
         return '?';
